@@ -13,7 +13,7 @@ format:
 editor: visual
 ---
 
-# Introduction
+# Introduction I like how you narrow the focus here to desire lines vs. existing vs. optimized routes. Very clear research question.
 
 This project will use stplanr transport modeling package to design an optimal transport route for bus or cycle routes in New York City. Stplanr is a transport planning visualization R package that can be used to plan transit networks, in addition to transit planning elements such as identifying transit catchment areas, origin/destination data and ride frequency visualizations, among others. In their white paper, the devlopers of stplanr call for an accountable, transparent and democratized transit planning system that doesn’t rely on proprietary and often vastly different data sources and data processing softwares. Although the package can visualize a whole host of data, this project will focus on comparing direct desire lines or “Euclidean” routes (as the crow flies), existing bus networks and stplanr’s optimized routes. To wit: this can map the efficiency of the bus routes compared to the most direct route possible if there were no built environment factors in the way.
 
@@ -77,7 +77,7 @@ flow_all <- expand.grid(o = shelters_sf_fix$id, #create origin
                         stringsAsFactors = FALSE) %>% #make sure they aren't factors
   filter(o != d) %>% # this remove self-pairs so O is not D
   mutate(trips = 1) %>% #add trip count of 1 for each pair
-  sample_n(50) #sample 50 random paris to avoid blowing up the computer
+  sample_n(50) #sample 50 random paris to avoid blowing up the computer This block is very clear and clever. I learned how to use expand.grid() plus filter(o != d) to generate all O–D pairs and then downsample with sample_n() to keep the computation manageable. I hadn’t thought of this workflow before.
 
 desire_lines_all <- od2line(flow_all, zones = shelters_sf_fix, zone_code = "id") #use od2line function to create desire lines (euclidean) for all pairs
 
@@ -97,7 +97,7 @@ route_single <- function(o_id, d_id) { #function to create a single route betwee
                       to   = c(d$X, d$Y)), silent = TRUE)
 #use try to catch errors  (e.g., no route found)
   if (inherits(r, "try-error")) return(NULL)
-#if route found, return the route
+#if route found, return the route Great use of try() and returning NULL for failed routes. This makes your later map2() call much more robust and avoids the whole pipeline breaking if OSRM can’t find a path.
   return(r)
 }
 
@@ -230,7 +230,7 @@ leaflet() %>%
     group = "OSRM Routes"
   ) %>%
   
-  # Add shelters (same as before)
+  # Add shelters (same as before)  
   addCircleMarkers(data = shelters_sf_fix,
                    color = "blue",
                    radius = 1,
